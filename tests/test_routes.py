@@ -105,3 +105,26 @@ class TestYourResourceServer(TestCase):
         # self.assertEqual(new_product["condition"], test_product.condition)
         # self.assertEqual(new_product["first_entry_date"], test_product.first_entry_date)
         # self.assertEqual(new_product["last_restock_date"], test_product.last_restock_date)
+    
+    def test_get_product(self):
+        """Get a product from db, should return the item with id"""
+        test_item  = ProductFactory()
+        logging.debug("Test Product: %s", test_item.serialize())
+        response = self.client.post(BASE_URL, json=test_item.serialize(),content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED) #has to be created
+
+        #get the item back
+        iid = test_item.id
+        response = self.client.get(BASE_URL+f"/{iid}", content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        got_item = response.get_json()
+        self.assertEqual(got_item["name"], test_item.name)
+        self.assertEqual(got_item["quantity"], test_item.quantity)
+        self.assertEqual(got_item["restock_level"], test_item.restock_level)
+        self.assertEqual(got_item["restock_count"], test_item.restock_count)
+        self.assertEqual(got_item["condition"], test_item.condition.name)
+
+        #try to get a nonexistent item
+        iid += 1
+        response = self.client.get(BASE_URL+f"/{iid}", content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

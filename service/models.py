@@ -40,8 +40,8 @@ class Inventory(db.Model):
     # Table Schema
     id = db.Column(db.Integer,primary_key=True)
     # default name is product_id
-    name = db.Column(db.String(63))
-    quantity = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(63)) #allow unnamed products
+    quantity = db.Column(db.Integer, nullable=False, default=0)
     restock_level = db.Column(db.Integer, nullable=False, default=0)
     restock_count = db.Column(db.Integer, nullable=False, default=0)
     condition = db.Column(
@@ -59,7 +59,7 @@ class Inventory(db.Model):
         Creates a Product to the database
         """
         logger.info("Creating %s", self.id)
-        self.id = None  # pylint: disable=invalid-name
+        # self.id = None  # pylint: disable=invalid-name
         db.session.add(self)
         db.session.commit()
 
@@ -101,14 +101,14 @@ class Inventory(db.Model):
             if "name" in data:
                 self.name = data["name"]
             else:
-                self.name = self.id
+                self.name = None    #product name can be none
             self.quantity = data["quantity"]
             self.restock_level = data["restock_level"]
             self.restock_count = data["restock_count"]
             self.condition = getattr(Condition, data["condition"])
             self.first_entry_date = date.fromisoformat(data["first_entry_date"])
             self.last_restock_date = date.fromisoformat(data["last_restock_date"])
-            
+         
         except KeyError as error:
             raise DataValidationError(
                 "Invalid Product: missing " + error.args[0]

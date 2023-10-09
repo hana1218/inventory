@@ -35,7 +35,7 @@ def create_product():
     Creates a product into the inventory
     This endpoint will create a product based the data in the body that is posted
     """
-    app.logger.info("Request to create a product")
+    app.logger.info("Request to create a product...")
     check_content_type("application/json")
     product = Inventory()
     product.deserialize(request.get_json())
@@ -47,6 +47,18 @@ def create_product():
     return jsonify(message), status.HTTP_201_CREATED
 
     # return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+
+@app.route("/inventory/<iid>", methods=["GET"])
+def get_product(iid):
+    """Gets a product with specified id"""
+    app.logger.info("Request to get product with id %d...", iid)
+    ans = Inventory.find(iid)
+    if ans is None:
+        abort(status.HTTP_404_NOT_FOUND, f"Product {iid} does not exist")
+    message = ans.serialize()
+    app.logger.info("Returning: product %d...", iid)
+    return jsonify(message), status.HTTP_200_OK
+
 
 
 ######################################################################

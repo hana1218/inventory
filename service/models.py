@@ -16,12 +16,13 @@ db = SQLAlchemy()
 
 # Function to initialize the database
 def init_db(app):
-    """ Initializes the SQLAlchemy app """
+    """Initializes the SQLAlchemy app"""
     Inventory.init_db(app)
 
 
 class DataValidationError(Exception):
-    """ Used for an data validation errors when deserializing """
+    """Used for an data validation errors when deserializing"""
+
 
 class Condition(Enum):
     """Enumeration of valid product Conditions"""
@@ -29,6 +30,7 @@ class Condition(Enum):
     NEW = 0
     OPEN_BOX = 1
     USED = 2
+
 
 class Inventory(db.Model):
     """
@@ -38,9 +40,9 @@ class Inventory(db.Model):
     app = None
 
     # Table Schema
-    id = db.Column(db.Integer,primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     # default name is product_id
-    name = db.Column(db.String(63)) #allow unnamed products
+    name = db.Column(db.String(63))  # allow unnamed products
     quantity = db.Column(db.Integer, nullable=False, default=0)
     restock_level = db.Column(db.Integer, nullable=False, default=0)
     restock_count = db.Column(db.Integer, nullable=False, default=0)
@@ -49,7 +51,6 @@ class Inventory(db.Model):
     )
     first_entry_date = db.Column(db.Date(), nullable=False, default=date.today())
     last_restock_date = db.Column(db.Date(), nullable=False, default=date.today())
-
 
     def __repr__(self):
         return f"<Product {self.id} id=[{self.id}]>"
@@ -71,22 +72,23 @@ class Inventory(db.Model):
         db.session.commit()
 
     def delete(self):
-        """ Removes a Product from the data store """
+        """Removes a Product from the data store"""
         logger.info("Deleting %s", self.id)
         db.session.delete(self)
         db.session.commit()
 
     def serialize(self):
-        """ Serializes a Product into a dictionary """
-        return {"id": self.id,
-                "name": self.name,
-                "quantity":self.quantity, 
-                "restock_level":self.restock_level,
-                "restock_count":self.restock_count,
-                "condition":self.condition.name,
-                "first_entry_date": self.first_entry_date.isoformat(),
-                "last_restock_date": self.last_restock_date.isoformat()
-                }
+        """Serializes a Product into a dictionary"""
+        return {
+            "id": self.id,
+            "name": self.name,
+            "quantity": self.quantity,
+            "restock_level": self.restock_level,
+            "restock_count": self.restock_count,
+            "condition": self.condition.name,
+            "first_entry_date": self.first_entry_date.isoformat(),
+            "last_restock_date": self.last_restock_date.isoformat(),
+        }
 
     def deserialize(self, data):
         """
@@ -96,19 +98,18 @@ class Inventory(db.Model):
             data (dict): A dictionary containing the resource data
         """
         try:
-
             self.id = data["id"]
             if "name" in data:
                 self.name = data["name"]
             else:
-                self.name = None    #product name can be none
+                self.name = None  # product name can be none
             self.quantity = data["quantity"]
             self.restock_level = data["restock_level"]
             self.restock_count = data["restock_count"]
             self.condition = getattr(Condition, data["condition"])
             self.first_entry_date = date.fromisoformat(data["first_entry_date"])
             self.last_restock_date = date.fromisoformat(data["last_restock_date"])
-         
+
         except KeyError as error:
             raise DataValidationError(
                 "Invalid Product: missing " + error.args[0]
@@ -118,11 +119,15 @@ class Inventory(db.Model):
                 "Invalid Product: body of request contained bad or no data - "
                 "Error message: " + error
             ) from error
+        except AttributeError as error:
+            raise DataValidationError(
+                "Invalid Product: body of request contained bad or no data - "
+            ) from error
         return self
 
     @classmethod
     def init_db(cls, app):
-        """ Initializes the database session """
+        """Initializes the database session"""
         logger.info("Initializing database")
         cls.app = app
         # This is where we initialize SQLAlchemy from the Flask app
@@ -132,13 +137,13 @@ class Inventory(db.Model):
 
     @classmethod
     def all(cls):
-        """ Returns all of the Products in the database """
+        """Returns all of the Products in the database"""
         logger.info("Processing all Products")
         return cls.query.all()
 
     @classmethod
     def find(cls, by_id):
-        """ Finds a Product by it's ID """
+        """Finds a Product by it's ID"""
         logger.info("Processing lookup for id %s ...", by_id)
         return cls.query.get(by_id)
 

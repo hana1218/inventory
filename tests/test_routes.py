@@ -115,8 +115,62 @@ class TestYourResourceServer(TestCase):
         # self.assertEqual(new_product["first_entry_date"], test_product.first_entry_date)
         # self.assertEqual(new_product["last_restock_date"], test_product.last_restock_date)
 
+    def test_not_json(self):
+        """Test create product with content type not being json, should raise error 415"""
+        test_product = ProductFactory()
+        logging.debug("Test Product: %s", test_product.serialize())
+        response = self.client.post(
+            BASE_URL, json=test_product.serialize(), content_type="application/not-json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_create_product_conflict(self):
+        """Test create a product with an id that already exists, should raise error 409"""
+        test_product = ProductFactory()
+        logging.debug("Test Product: %s", test_product.serialize())
+        response = self.client.post(
+            BASE_URL, json=test_product.serialize(), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        conf_product = ProductFactory()
+        conf_product.id = test_product.id
+        logging.debug("Conflict Product: %s", conf_product.serialize())
+        response = self.client.post(
+            BASE_URL, json=conf_product.serialize(), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+    def test_create_bad_data(self):
+        """Create an item with bad data, missing fields or wrong types, should raise error 400"""
+        not_integer = {
+            "id": "not an integer",
+            "quantity": 1,
+            "restock_level": "not an integer",
+            "restock_count": 1,
+            "condition": "NEW",
+            "first_entry_date": "2011-01-01",
+            "last_restock_date": "2011-01-03",
+        }
+        logging.debug("Test Product: %s", not_integer)
+        response = self.client.post(
+            BASE_URL, data=not_integer, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        missing_field = {
+            "id": 25,
+            "quantity": 3,
+            "restock_count": 10,
+        }  # missing other fields
+        logging.debug("Test Product: %s", missing_field)
+        response = self.client.post(
+            BASE_URL, data=missing_field, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_get_product(self):
-        """Get a product from db, should return the item with id"""
+        """Get a product from db, should return the item with id or 404 if not exist"""
         test_item = ProductFactory()
         logging.debug("Test Product: %s", test_item.serialize())
         response = self.client.post(
@@ -128,9 +182,7 @@ class TestYourResourceServer(TestCase):
 
         # get the item back
         iid = test_item.id
-        response = self.client.get(
-            BASE_URL + f"/{iid}", content_type="application/json"
-        )
+        response = self.client.get(f"{BASE_URL}/{iid}", content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         got_item = response.get_json()
         self.assertEqual(got_item["name"], test_item.name)
@@ -141,9 +193,7 @@ class TestYourResourceServer(TestCase):
 
         # try to get a nonexistent item
         iid += 1
-        response = self.client.get(
-            BASE_URL + f"/{iid}", content_type="application/json"
-        )
+        response = self.client.get(f"{BASE_URL}/{iid}", content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_product(self):
@@ -172,3 +222,32 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(updated_product["restock_level"], 0)
         self.assertEqual(updated_product["restock_count"], 0)
         self.assertEqual(updated_product["condition"], "USED")
+
+    def test_bad_update(self):
+        """Update nonexistent product and bad data, should raise 404 and 415"""
+        test_product = ProductFactory()
+        response = self.client.post(BASE_URL, json=test_product.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # update the product
+        new_product = response.get_json()
+        logging.debug(new_product)
+        new_product["id"] += 1  # invalid ID
+        new_product["name"] = "newname"
+        response = self.client.put(f"{BASE_URL}/{new_product['id']}", json=new_product)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        new_product["id"] -= 1
+        new_product["condition"] = "bad condition"
+        response = self.client.put(f"{BASE_URL}/{new_product['id']}", json=new_product)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_method_not_allowed(self):
+        """Call not-allowed methods on url, should raise 405"""
+        post_product = ProductFactory()
+
+        # call POST on /inventory/<iid>
+        response = self.client.post(
+            f"{BASE_URL}/{post_product.id}", json=post_product.serialize()
+        )
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

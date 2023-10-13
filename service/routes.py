@@ -6,7 +6,7 @@ Describe what your service does here
 
 from flask import jsonify, request, url_for, abort
 from service.common import status  # HTTP Status Codes
-from service.models import Inventory
+from service.models import Inventory, DataValidationError
 
 # Import Flask application
 from . import app
@@ -40,6 +40,8 @@ def create_product():
     check_content_type("application/json")
     product = Inventory()
     product.deserialize(request.get_json())
+    if Inventory.find(product.id) is not None:
+        abort(status.HTTP_409_CONFLICT, f"Product {product.id} already exists")
     product.create()
     message = product.serialize()
     # location_url = url_for("get_products", pet_id=product.id, _external=True)
@@ -82,6 +84,15 @@ def update_product(iid):
 
     app.logger.info("Product with ID [%s] updated.", product.id)
     return jsonify(product.serialize()), status.HTTP_200_OK
+
+
+@app.route("/inventory/<iid>", methods=["POST"])
+def post_on_id(iid):
+    """Handle invalid method: POST on inventory/<iid>"""
+    abort(
+        status.HTTP_405_METHOD_NOT_ALLOWED,
+        f"Path not allowed, use /inventory to create product {iid}",
+    )
 
 
 ######################################################################

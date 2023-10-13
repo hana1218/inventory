@@ -17,7 +17,7 @@ from . import app
 ######################################################################
 @app.route("/")
 def index():
-    """ Root URL response """
+    """Root URL response"""
     return (
         "Reminder: return some useful information in json format about the service here",
         status.HTTP_200_OK,
@@ -27,6 +27,7 @@ def index():
 ######################################################################
 #  R E S T   A P I   E N D P O I N T S
 ######################################################################
+
 
 # Place your REST API code here ...
 @app.route("/inventory", methods=["POST"])
@@ -48,6 +49,7 @@ def create_product():
 
     # return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
 
+
 @app.route("/inventory/<iid>", methods=["GET"])
 def get_product(iid):
     """Gets a product with specified id"""
@@ -59,6 +61,27 @@ def get_product(iid):
     app.logger.info("Returning: product %d...", iid)
     return jsonify(message), status.HTTP_200_OK
 
+
+@app.route("/inventory/<iid>", methods=["PUT"])
+def update_product(iid):
+    """
+    Update a product
+
+    This endpoint will update a product based the body that is posted
+    """
+    app.logger.info("Request to update product with id: %s", iid)
+    check_content_type("application/json")
+
+    product = Inventory.find(iid)
+    if not product:
+        abort(status.HTTP_404_NOT_FOUND, f"Product with id '{iid}' was not found.")
+
+    product.deserialize(request.get_json())
+    product.id = iid
+    product.update()
+
+    app.logger.info("Product with ID [%s] updated.", product.id)
+    return jsonify(product.serialize()), status.HTTP_200_OK
 
 
 ######################################################################

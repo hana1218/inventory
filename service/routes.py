@@ -102,7 +102,7 @@ def delete_product(iid):
 
     product = Inventory.find(iid)
     if not product:
-        abort(status.HTTP_404_NOT_FOUND, f"Product with id '{iid}' was not found.")
+        return jsonify({}), status.HTTP_204_NO_CONTENT
 
     product.delete()
 

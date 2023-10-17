@@ -5,7 +5,7 @@
 
 ## Overview
 
-This is a repository is the project of the **Inventory Squad** for the NYU masters class **CSCI-GA.2820-001 DevOps and Agile Methodologies**. This project is a [Flask](https://flask.palletsprojects.com/) app contains one inventory of all of the products that an e-commerce web site sells. And keep track of the detailed information of the inventory items (id, name, quantity, condition etc.) with the [SQLAlchemy](https://www.sqlalchemy.org/) database model. Also, the app implements the management features like **Add**, **Get**, **Delete**, **Update** and **List** (not yet implemented) items in the inventory database by using the RESTful API.
+This is a repository is the project of the **Inventory Squad** for the NYU masters class **CSCI-GA.2820-001 DevOps and Agile Methodologies**. This project is a [Flask](https://flask.palletsprojects.com/) app contains one inventory of all of the products that an e-commerce web site sells. And keep track of the detailed information of the inventory items (id, name, quantity, condition etc.) with the [SQLAlchemy](https://www.sqlalchemy.org/) database model. Also, the app implements the management features like **Add**, **Get**, **Delete**, **Update** and **List** items in the inventory database by using the RESTful API.
 
 ## Run
 The Flask app now runs on the local machine. To start the app, type the following command in the shell:

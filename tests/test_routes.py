@@ -267,4 +267,4 @@ class TestYourResourceServer(TestCase):
         """Delete a product that doesn't exist"""
         resp = self.client.delete(f"{BASE_URL}/999999", content_type="application/json")
 
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)

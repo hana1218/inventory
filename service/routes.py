@@ -44,12 +44,12 @@ def create_product():
         abort(status.HTTP_409_CONFLICT, f"Product {product.id} already exists")
     product.create()
     message = product.serialize()
-    # location_url = url_for("get_products", pet_id=product.id, _external=True)
+    location_url = url_for("get_product", iid=product.id, _external=True)
 
     app.logger.info("Product with ID [%s] created.", product.id)
-    return jsonify(message), status.HTTP_201_CREATED
+    # return jsonify(message), status.HTTP_201_CREATED
 
-    # return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+    return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
 
 
 @app.route("/inventory/<iid>", methods=["GET"])

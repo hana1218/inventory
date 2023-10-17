@@ -111,9 +111,9 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(new_product["quantity"], test_product.quantity)
         self.assertEqual(new_product["restock_level"], test_product.restock_level)
         self.assertEqual(new_product["restock_count"], test_product.restock_count)
-        self.assertEqual(new_product["condition"], test_product.condition)
-        self.assertEqual(new_product["first_entry_date"], test_product.first_entry_date)
-        self.assertEqual(new_product["last_restock_date"], test_product.last_restock_date)
+        self.assertEqual(new_product["condition"], test_product.condition.name)
+        self.assertEqual(new_product["first_entry_date"], test_product.first_entry_date.isoformat())
+        self.assertEqual(new_product["last_restock_date"], test_product.last_restock_date.isoformat())
 
     def test_not_json(self):
         """Test create product with content type not being json, should raise error 415"""

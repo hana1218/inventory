@@ -95,6 +95,21 @@ def post_on_id(iid):
     )
 
 
+@app.route("/inventory/<iid>", methods=["DELETE"])
+def delete_product(iid):
+    """Delete a product from the inventory"""
+    app.logger.info("Request to delete product with id: %s", iid)
+
+    product = Inventory.find(iid)
+    if not product:
+        abort(status.HTTP_404_NOT_FOUND, f"Product with id '{iid}' was not found.")
+
+    product.delete()
+
+    app.logger.info("Product with ID [%s] deleted.", iid)
+    return jsonify({}), status.HTTP_204_NO_CONTENT
+
+
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################

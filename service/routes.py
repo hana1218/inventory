@@ -110,6 +110,15 @@ def delete_product(iid):
     return jsonify({}), status.HTTP_204_NO_CONTENT
 
 
+@app.route("/inventory", methods=["GET"])
+def list_products():
+    """Retrieves all products from the inventory"""
+    app.logger.info("Request to list all products")
+    products = Inventory.all()
+    results = [product.serialize() for product in products]
+    return jsonify(results), status.HTTP_200_OK
+
+
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################

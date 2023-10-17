@@ -86,8 +86,8 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Make sure location header is set
-        # location = response.headers.get("Location", None)
-        # self.assertIsNotNone(location)
+        location = response.headers.get("Location", None)
+        self.assertIsNotNone(location)
 
         # Check the data is correct
         new_product = response.get_json()
@@ -104,16 +104,16 @@ class TestYourResourceServer(TestCase):
         )
 
         # Check that the location header was correct
-        # response = self.client.get(location)
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # new_product = response.get_json()
-        # self.assertEqual(new_product["name"], test_product.name)
-        # self.assertEqual(new_product["quantity"], test_product.quantity)
-        # self.assertEqual(new_product["restock_level"], test_product.restock_level)
-        # self.assertEqual(new_product["restock_count"], test_product.restock_count)
-        # self.assertEqual(new_product["condition"], test_product.condition)
-        # self.assertEqual(new_product["first_entry_date"], test_product.first_entry_date)
-        # self.assertEqual(new_product["last_restock_date"], test_product.last_restock_date)
+        response = self.client.get(location)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        new_product = response.get_json()
+        self.assertEqual(new_product["name"], test_product.name)
+        self.assertEqual(new_product["quantity"], test_product.quantity)
+        self.assertEqual(new_product["restock_level"], test_product.restock_level)
+        self.assertEqual(new_product["restock_count"], test_product.restock_count)
+        self.assertEqual(new_product["condition"], test_product.condition)
+        self.assertEqual(new_product["first_entry_date"], test_product.first_entry_date)
+        self.assertEqual(new_product["last_restock_date"], test_product.last_restock_date)
 
     def test_not_json(self):
         """Test create product with content type not being json, should raise error 415"""

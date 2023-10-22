@@ -15,7 +15,7 @@
 """
 Test Factory to make fake objects for testing
 """
-from datetime import date,timedelta
+from datetime import date, timedelta
 import random
 import factory
 from factory.fuzzy import FuzzyChoice, FuzzyDate
@@ -30,11 +30,13 @@ class ProductFactory(factory.Factory):
 
         model = Inventory
 
-    id = factory.LazyFunction(lambda:random.randint(0, 200))
+    id = factory.LazyFunction(lambda: random.randint(0, 200))
     name = factory.Faker("first_name")
-    quantity = factory.LazyFunction(lambda:random.randint(0, 1000))
-    restock_level = factory.LazyFunction(lambda:random.randint(0, 50))
-    restock_count = factory.LazyFunction(lambda:random.randint(50, 200))
+    quantity = factory.LazyFunction(lambda: random.randint(0, 1000))
+    restock_level = factory.LazyFunction(lambda: random.randint(0, 50))
+    restock_count = factory.LazyFunction(lambda: random.randint(50, 200))
     condition = FuzzyChoice(choices=[Condition.NEW, Condition.OPEN_BOX, Condition.USED])
     first_entry_date = FuzzyDate(date(2008, 1, 1))
-    last_restock_date = factory.LazyAttribute(lambda t: t.first_entry_date + timedelta(days=random.randint(1, 365)))
+    last_restock_date = factory.LazyAttribute(
+        lambda t: t.first_entry_date + timedelta(days=random.randint(1, 365))
+    )

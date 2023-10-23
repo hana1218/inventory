@@ -6,7 +6,7 @@ Describe what your service does here
 
 from flask import jsonify, request, url_for, abort
 from service.common import status  # HTTP Status Codes
-from service.models import Inventory, DataValidationError
+from service.models import Inventory
 
 # Import Flask application
 from . import app

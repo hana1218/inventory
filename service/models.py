@@ -32,6 +32,7 @@ class Condition(Enum):
     USED = 2
 
 
+# pylint: disable=invalid-name, too-many-instance-attributes
 class Inventory(db.Model):
     """
     Class that represents a Product

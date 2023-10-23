@@ -6,8 +6,7 @@ import os
 import logging
 import unittest
 from datetime import date
-from service.models import Inventory, DataValidationError, db, Condition
-from tests.factories import ProductFactory
+from service.models import Inventory, db, Condition
 from service import app
 
 
@@ -274,14 +273,14 @@ class TestProductModel(unittest.TestCase):
 
         flags = Inventory.find_by_name("NFA flag")
         i = 0
-        for f in flags:
-            self.assertEqual(f.name, "NFA flag")
+        for flag in flags:
+            self.assertEqual(flag.name, "NFA flag")
             i += 1
         self.assertEqual(i, 3)
 
         billy = Inventory.find_by_name("billy the puppet")
-        for b in billy:
-            self.assertEqual(b.id, 22)
+        for bill in billy:
+            self.assertEqual(bill.id, 22)
 
         gators = Inventory.find_by_name("gator")
         self.assertTrue(gators, None)

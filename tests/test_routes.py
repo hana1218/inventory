@@ -112,8 +112,12 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(new_product["restock_level"], test_product.restock_level)
         self.assertEqual(new_product["restock_count"], test_product.restock_count)
         self.assertEqual(new_product["condition"], test_product.condition.name)
-        self.assertEqual(new_product["first_entry_date"], test_product.first_entry_date.isoformat())
-        self.assertEqual(new_product["last_restock_date"], test_product.last_restock_date.isoformat())
+        self.assertEqual(
+            new_product["first_entry_date"], test_product.first_entry_date.isoformat()
+        )
+        self.assertEqual(
+            new_product["last_restock_date"], test_product.last_restock_date.isoformat()
+        )
 
     def test_not_json(self):
         """Test create product with content type not being json, should raise error 415"""
@@ -256,12 +260,12 @@ class TestYourResourceServer(TestCase):
         """Delete a product"""
         test_product = ProductFactory()
         test_product.create()
-        id = test_product.id
+        iid = test_product.id
 
-        self.assertIsNotNone(Inventory.find(id))
-        resp = self.client.delete(f"{BASE_URL}/{id}", content_type="application/json")
+        self.assertIsNotNone(Inventory.find(iid))
+        resp = self.client.delete(f"{BASE_URL}/{iid}", content_type="application/json")
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertIsNone(Inventory.find(id))
+        self.assertIsNone(Inventory.find(iid))
 
     def test_delete_nonexistent_product(self):
         """Delete a product that doesn't exist"""

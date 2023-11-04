@@ -417,7 +417,7 @@ class TestProductModel(unittest.TestCase):
         count = len(
             [product for product in all_items if product.condition == condition]
         )
-        found = Inventory.find_by_condition(condition.value)
+        found = Inventory.find_by_condition(condition.name)
         self.assertEqual(found.count(), count)
         for product in found:
             self.assertEqual(product.condition, condition)

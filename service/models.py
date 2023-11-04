@@ -170,6 +170,10 @@ class Inventory(db.Model):
         OPEN_BOX: http://127.0.0.1:8000/inventory?condition=1
         USED: http://127.0.0.1:8000/inventory?condition=2
         """
-        condition = Condition(int(condition))
-        logger.info("Processing condition query for %s ...", condition)
+        if str.isdigit(condition):
+            condition = Condition(int(condition))
+            logger.info("Processing condition query for %s ...", condition)
+        else:
+            condition = getattr(Condition, condition)
+            logger.info("Processing condition query for %s ...", condition)
         return cls.query.filter(cls.condition == condition)

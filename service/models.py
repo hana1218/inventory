@@ -174,7 +174,7 @@ class Inventory(db.Model):
             condition = Condition(int(condition))
             logger.info("Processing condition query for %s ...", condition)
         else:
-            condition = condition.replace("-", "_")
+            # condition = condition.replace("-", "_")
             condition = getattr(Condition, str.upper(condition))
             logger.info("Processing condition query for %s ...", condition)
         return cls.query.filter(cls.condition == condition)

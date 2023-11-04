@@ -290,3 +290,28 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), 5)
+
+    def test_query_by_condition(self):
+        """It should Query inventory items by Condition"""
+
+        products = self._create_products(3)
+        test_condition = products[0].condition
+        condition_product = [
+            item for item in products if item.condition == test_condition
+        ]
+        response = self.client.get(
+            BASE_URL, query_string=f"condition={str(test_condition.value)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), len(condition_product))
+
+        if str(test_condition.value) == "0":
+            for item in data:
+                self.assertEqual(item["condition"], "NEW")
+        if str(test_condition.value) == "1":
+            for item in data:
+                self.assertEqual(item["condition"], "OPEN_BOX")
+        if str(test_condition.value) == "2":
+            for item in data:
+                self.assertEqual(item["condition"], "USED")

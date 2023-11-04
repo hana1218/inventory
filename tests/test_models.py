@@ -9,7 +9,6 @@ from datetime import date
 from service.models import Inventory, db, Condition
 from service import app
 
-
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
 )
@@ -377,3 +376,48 @@ class TestProductModel(unittest.TestCase):
         # data_miss = {"id": 111, "restock_count": 2, "condition": "NEW"}
         # item_3.deserialize(data_miss)
         # self.assertRaises(DataValidationError)
+
+    def test_find_by_condition(self):
+        """It should Find inventory items by Condition"""
+        prod_1 = Inventory(
+            id=1,
+            name="reverse bear trap",
+            quantity=3,
+            restock_level=10,
+            restock_count=6,
+            condition=Condition.USED,
+            first_entry_date=date(2004, 10, 31),
+            last_restock_date=date(2010, 10, 31),
+        )
+        prod_2 = Inventory(
+            id=2,
+            name="venus fly trap",
+            quantity=1,
+            restock_level=5,
+            restock_count=2,
+            condition=Condition.OPEN_BOX,
+            first_entry_date=date(2005, 10, 31),
+            last_restock_date=date(2005, 10, 31),
+        )
+        prod_3 = Inventory(
+            id=3,
+            name="shotgun collar",
+            quantity=1,
+            restock_level=1,
+            restock_count=2,
+            condition=Condition.USED,
+            first_entry_date=date(2006, 10, 31),
+            last_restock_date=date(2017, 10, 31),
+        )
+        prod_1.create()
+        prod_2.create()
+        prod_3.create()
+        all_items = Inventory.all()
+        condition = all_items[0].condition
+        count = len(
+            [product for product in all_items if product.condition == condition]
+        )
+        found = Inventory.find_by_condition(condition.value)
+        self.assertEqual(found.count(), count)
+        for product in found:
+            self.assertEqual(product.condition, condition)

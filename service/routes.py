@@ -117,10 +117,13 @@ def list_products():
     products = []
     condition = request.args.get("condition")
     name = request.args.get("name")
+    quantity = request.args.get("quantity")
     if condition:
         products = Inventory.find_by_condition(condition)
     elif name:
         products = Inventory.find_by_name(name)
+    elif quantity:
+        products = Inventory.find_by_quantity(quantity)
     else:
         products = Inventory.all()
     results = [product.serialize() for product in products]

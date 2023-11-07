@@ -323,8 +323,8 @@ class TestYourResourceServer(TestCase):
         data = response.get_json()
         self.assertEqual(len(data), len(condition_product))
 
-        for item in data:
-            self.assertEqual(item["condition"], test_condition.name)
+        for products in data:
+            self.assertEqual(products["condition"], test_condition.name)
 
     def test_restock(self):
         """

@@ -83,7 +83,7 @@ def update_product(iid):
         abort(status.HTTP_404_NOT_FOUND, f"Product with id '{iid}' was not found.")
 
     product.deserialize(request.get_json())
-    product.id = iid
+    product.id = iid  # to undo deserialize's id field, so update won't change id
     product.update()
 
     app.logger.info("Product with ID [%s] updated.", product.id)
@@ -133,6 +133,24 @@ def list_products():
     results = [product.serialize() for product in products]
     app.logger.info("Returning %d products", len(results))
     return jsonify(results), status.HTTP_200_OK
+
+
+@app.route("/inventory/<iid>/restock", methods=["PUT"])
+def restock_product(iid):
+    """Restocks product with certain id to its restock level"""
+    app.logger.info("Request to restock product with id %d...", iid)
+    ans = Inventory.find(iid)
+    if ans is None:
+        abort(status.HTTP_404_NOT_FOUND, f"Product {iid} does not exist")
+    cur = ans.quantity
+    need = ans.restock_level
+    if cur < need:
+        added = need - cur
+        ans.quantity = need
+        ans.restock_count += 1
+        app.logger.info("Restock %d units of product %d", added, need)
+        ans.update()
+    return (f"Product {iid} restocked. Current quantity {need}", status.HTTP_200_OK)
 
 
 ######################################################################

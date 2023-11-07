@@ -293,12 +293,13 @@ class TestYourResourceServer(TestCase):
 
     def test_query_by_condition(self):
         """It should Query inventory items by Condition"""
-
         products = self._create_products(3)
         test_condition = products[0].condition
         condition_product = [
             item for item in products if item.condition == test_condition
         ]
+
+        # by condition number
         response = self.client.get(
             BASE_URL, query_string=f"condition={str(test_condition.value)}"
         )
@@ -316,6 +317,69 @@ class TestYourResourceServer(TestCase):
             for item in data:
                 self.assertEqual(item["condition"], "USED")
 
+        # by condition string
+        qs = str.upper(test_condition.name)
+        response = self.client.get(BASE_URL, query_string=f"condition={qs}")
+        data = response.get_json()
+        self.assertEqual(len(data), len(condition_product))
+
+        if test_condition.name == "NEW":
+            for item in data:
+                self.assertEqual(item["condition"], "NEW")
+        if test_condition.name == "OPEN_BOX":
+            for item in data:
+                self.assertEqual(item["condition"], "OPEN_BOX")
+        if test_condition.name == "USED":
+            for item in data:
+                self.assertEqual(item["condition"], "USED")
+
+    def test_restock(self):
+        """
+        Restock a product whose quantity is below restock level
+        one whose is above, and one nonexistent
+        """
+        # prod 1: quantity below level
+        prod_1 = ProductFactory()
+        prod_1.restock_level = 100
+        prod_1.quantity = 14
+        cur_count_1 = prod_1.restock_count
+        id_1 = prod_1.id
+        prod_1.create()
+
+        # restock and check new quantity
+        response = self.client.put(f"{BASE_URL}/{id_1}/restock")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(f"{BASE_URL}/{id_1}")
+        data = response.get_json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data["quantity"], 100)
+        self.assertEqual(data["restock_count"], cur_count_1 + 1)
+
+        # prod 2: quantity above level
+        prod_2 = ProductFactory()
+        prod_2.restock_level = 100
+        prod_2.quantity = 136
+        cur_count_2 = prod_2.restock_count
+        id_2 = prod_2.id
+        prod_2.create()
+
+        # check current quantity
+
+        # after restock
+        response = self.client.put(f"{BASE_URL}/{id_2}/restock")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(f"{BASE_URL}/{id_2}")
+        data = response.get_json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data["quantity"], 136)
+        self.assertEqual(data["restock_count"], cur_count_2)
+
+        # restock nonexistent
+        id_bad = id_2 + id_1
+        response = self.client.put(f"{BASE_URL}/{id_bad}/restock")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
     def test_query_by_quantity(self):
         """It should Query inventory items by quantity"""
 

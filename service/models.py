@@ -177,3 +177,14 @@ class Inventory(db.Model):
             condition = getattr(Condition, str.upper(condition))
             logger.info("Processing condition query for %s ...", condition)
         return cls.query.filter(cls.condition == condition)
+
+    @classmethod
+    def find_by_quantity(cls, quantity):
+        """Returns all Products with the given quantity
+
+        Args:
+            quantity (string): the quantity of the Product you want to match
+
+        """
+        logger.info("Processing name query for %s ...", quantity)
+        return cls.query.filter(cls.quantity == quantity)

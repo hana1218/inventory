@@ -19,7 +19,11 @@ from . import app
 def index():
     """Root URL response"""
     return (
-        "Reminder: return some useful information in json format about the service here",
+        jsonify(
+            name="Inventory Demo REST API Service",
+            version="1.0",
+            paths=url_for("list_products", _external=True),
+        ),
         status.HTTP_200_OK,
     )
 
@@ -117,10 +121,13 @@ def list_products():
     products = []
     condition = request.args.get("condition")
     name = request.args.get("name")
+    quantity = request.args.get("quantity")
     if condition:
         products = Inventory.find_by_condition(condition)
     elif name:
         products = Inventory.find_by_name(name)
+    elif quantity:
+        products = Inventory.find_by_quantity(quantity)
     else:
         products = Inventory.all()
     results = [product.serialize() for product in products]

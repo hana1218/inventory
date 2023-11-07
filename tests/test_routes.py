@@ -380,6 +380,7 @@ class TestYourResourceServer(TestCase):
         id_bad = id_2 + id_1
         response = self.client.put(f"{BASE_URL}/{id_bad}/restock")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_query_by_quantity(self):
         """It should Query inventory items by quantity"""
 
@@ -394,3 +395,23 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(len(data), len(quantity_product))
         for item in data:
             self.assertEqual(item["quantity"], test_quantity)
+
+    def test_query_by_name(self):
+        """Get product by name and nonexistent name, should return 200"""
+        products = [ProductFactory() for i in range(0, 4)]
+        products[0].name = "dog_whistle"
+        products[1].name = "bear_mace"
+        products[2].name = "dog_whistle"
+        products[3].name = "dog_whistle"
+        for i in range(0, 4):
+            products[i].create()
+
+        response = self.client.get(BASE_URL, query_string="name=dog_whistle")
+        data = response.get_json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(data), 3)
+
+        response = self.client.get(BASE_URL, query_string="name=dog_collar")
+        data = response.get_json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(data), 0)

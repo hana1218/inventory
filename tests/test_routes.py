@@ -318,20 +318,13 @@ class TestYourResourceServer(TestCase):
                 self.assertEqual(item["condition"], "USED")
 
         # by condition string
-        qs = str.upper(test_condition.name)
-        response = self.client.get(BASE_URL, query_string=f"condition={qs}")
+        string_query = str.upper(test_condition.name)
+        response = self.client.get(BASE_URL, query_string=f"condition={string_query}")
         data = response.get_json()
         self.assertEqual(len(data), len(condition_product))
 
-        if test_condition.name == "NEW":
-            for item in data:
-                self.assertEqual(item["condition"], "NEW")
-        if test_condition.name == "OPEN_BOX":
-            for item in data:
-                self.assertEqual(item["condition"], "OPEN_BOX")
-        if test_condition.name == "USED":
-            for item in data:
-                self.assertEqual(item["condition"], "USED")
+        for products in data:
+            self.assertEqual(products["condition"], test_condition.name)
 
     def test_restock(self):
         """

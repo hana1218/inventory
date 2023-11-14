@@ -18,6 +18,17 @@ After the shell showing the message indicate the app is running successfully, yo
 
 To access the home page of the app, you can go to <http://localhost:8000/>. This page will provide you some information about the app.
 
+### k3d
+Run by using k3d cluster. In this case, the default port is 8080.
+
+```bash
+make cluster
+docker build -t inventory:1.0 .
+docker tag inventory:1.0 cluster-registry:32000/inventory:1.0
+docker push cluster-registry:32000/inventory:1.0
+kubectl apply -f k8s/
+```
+
 ## RESTful API usage
 
 ### Create

@@ -220,13 +220,13 @@ $(function () {
                 queryString += 'name=' + name
             }
         }
-        // if (quantity) {
-        //     if (queryString.length > 0) {
-        //         queryString += '&quantity=' + quantity
-        //     } else {
-        //         queryString += 'quantity=' + quantity
-        //     }
-        // }
+        if (quantity) {
+            if (queryString.length > 0) {
+                queryString += '&quantity=' + quantity
+            } else {
+                queryString += 'quantity=' + quantity
+            }
+        }
         // if (restock_level) {
         //     if (queryString.length > 0) {
         //         queryString += '&restock_level=' + restock_level

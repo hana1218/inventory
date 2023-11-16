@@ -18,7 +18,7 @@ from . import app
 @app.route("/health")
 def health():
     """Health Status"""
-    return {"status": "OK"}, status.HTTP_200_OK
+    return jsonify(status="OK"), status.HTTP_200_OK
 
 
 ######################################################################

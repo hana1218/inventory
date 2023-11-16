@@ -54,17 +54,23 @@ class TestYourResourceServer(TestCase):
     def _create_products(self, count):
         """Factory method to create products in bulk"""
         products = []
-        for _ in range(count):
-            test_pet = ProductFactory()
-            response = self.client.post(BASE_URL, json=test_pet.serialize())
-            self.assertEqual(
-                response.status_code,
-                status.HTTP_201_CREATED,
-                "Could not create test pet",
+        while count:
+            test_product = ProductFactory()
+            iid = test_product.serialize()["id"]
+            response = self.client.get(
+                f"{BASE_URL}/{iid}", content_type="application/json"
             )
-            new_pet = response.get_json()
-            test_pet.id = new_pet["id"]
-            products.append(test_pet)
+            if response.status_code == 404:
+                response = self.client.post(BASE_URL, json=test_product.serialize())
+                self.assertEqual(
+                    response.status_code,
+                    status.HTTP_201_CREATED,
+                    "Could not create test product",
+                )
+                new_product = response.get_json()
+                test_product.id = new_product["id"]
+                products.append(test_product)
+                count -= 1
         return products
 
     ######################################################################

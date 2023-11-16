@@ -22,10 +22,14 @@ spec:
       imagePullSecrets:
       - name: all-icr-io
       restartPolicy: Always
+      initContainers:
+      - name: check-postgres
+        image: busybox
+        command: ['sh', '-c', 'until nc -z postgres 5432; do echo waiting for postgres; sleep 2; done;']
       containers:
       - name: inventory
-        image: cluster-registry:32000/inventory:1.0
-        #image: inventory
+        # image: cluster-registry:32000/inventory:1.0
+        image: inventory
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

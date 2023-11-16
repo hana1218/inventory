@@ -7,18 +7,47 @@
 
 This is a repository is the project of the **Inventory Squad** for the NYU masters class **CSCI-GA.2820-001 DevOps and Agile Methodologies**. This project is a [Flask](https://flask.palletsprojects.com/) app contains one inventory of all of the products that an e-commerce web site sells. And keep track of the detailed information of the inventory items (id, name, quantity, condition etc.) with the [SQLAlchemy](https://www.sqlalchemy.org/) database model. Also, the app implements the management features like **Add**, **Get**, **Delete**, **Update** and **List** for items in the inventory database by using the RESTful API.
 
-### k3d
-Run by using k3d cluster. In this case, the default port is 8080.
+### Start cluster
 
 ```bash
 make cluster
-docker build -t inventory:1.0 .
-docker tag inventory:1.0 cluster-registry:32000/inventory:1.0
-docker push cluster-registry:32000/inventory:1.0
-kubectl apply -f k8s/
 ```
 
-## Run
+### Ways to launch the application
+
+1. skaffold
+
+   Run by using skaffold. The default port is 8080.
+
+    ```bash
+    skaffold dev
+    ```
+
+2. k3d
+
+    Run by using k3d cluster. The default port is 8080.
+
+    **Note: using this launch method should modify this config in the deployment.yaml**
+
+    ```yaml
+    - name: inventory
+            # shuold use this instead of image:inventory
+            image: cluster-registry:32000/inventory:1.0
+            # image: inventory
+            imagePullPolicy: IfNotPresent
+    ```
+
+    Related commands:
+
+    ```bash
+    docker build -t inventory:1.0 .
+    docker tag inventory:1.0 cluster-registry:32000/inventory:1.0
+    docker push cluster-registry:32000/inventory:1.0
+    kubectl apply -f k8s/
+    ```
+
+## Run flask
+
 The Flask app now runs on the local machine. To start the app, type the following command in the shell:
 
 ```bash

@@ -415,6 +415,51 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(data), 0)
 
+    def test_query_by_queries(self):
+        """Get product by multiple fields, should return 200"""
+        products = [ProductFactory() for i in range(0, 3)]
+        products[0].name = "dog_whistle"
+        products[0].quantity = "1"
+        products[0].condition = "NEW"
+        products[1].name = "bear_mace"
+        products[1].quantity = "0"
+        products[1].condition = "NEW"
+        products[2].name = "dog_whistle"
+        products[2].quantity = "1"
+        products[2].condition = "USED"
+
+        for i in range(0, 3):
+            products[i].create()
+
+        response = self.client.get(BASE_URL, query_string="name=dog_whistle&quantity=1")
+        data = response.get_json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(data), 2)
+
+        response = self.client.get(
+            BASE_URL, query_string="name=bear_mace&condition=USED"
+        )
+        data = response.get_json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(data), 0)
+
+        response = self.client.get(BASE_URL, query_string="quantity=1&condition=USED")
+        data = response.get_json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(data), 1)
+
+        response = self.client.get(
+            BASE_URL, query_string="name=dog_whistle&quantity=1&condition=NEW"
+        )
+        data = response.get_json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(data), 1)
+
+        response = self.client.get(BASE_URL, query_string="name=dog_collar")
+        data = response.get_json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(data), 0)
+
     def test_health(self):
         """It should Get the health endpoint"""
         resp = self.client.get("/health")

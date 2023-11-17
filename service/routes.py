@@ -133,7 +133,15 @@ def list_products():
     condition = request.args.get("condition")
     name = request.args.get("name")
     quantity = request.args.get("quantity")
-    if condition:
+    if name and quantity and condition:
+        products = Inventory.find_by_queries(name, quantity, condition)
+    elif name and quantity:
+        products = Inventory.find_by_queries(name=name, quantity=quantity)
+    elif quantity and condition:
+        products = Inventory.find_by_queries(quantity=quantity, condition=condition)
+    elif name and condition:
+        products = Inventory.find_by_queries(name=name, condition=condition)
+    elif condition:
         products = Inventory.find_by_condition(condition)
     elif name:
         products = Inventory.find_by_name(name)

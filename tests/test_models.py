@@ -421,3 +421,54 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(found.count(), count)
         for product in found:
             self.assertEqual(product.condition, condition)
+
+    def test_find_by_queries(self):
+        """It should Find inventory items by multiple fields"""
+        prod_1 = Inventory(
+            id=1,
+            name="reverse bear trap",
+            quantity=3,
+            restock_level=10,
+            restock_count=6,
+            condition=Condition.USED,
+            first_entry_date=date(2004, 10, 31),
+            last_restock_date=date(2010, 10, 31),
+        )
+        prod_2 = Inventory(
+            id=2,
+            name="venus fly trap",
+            quantity=1,
+            restock_level=5,
+            restock_count=2,
+            condition=Condition.OPEN_BOX,
+            first_entry_date=date(2005, 10, 31),
+            last_restock_date=date(2005, 10, 31),
+        )
+        prod_3 = Inventory(
+            id=3,
+            name="shotgun collar",
+            quantity=1,
+            restock_level=1,
+            restock_count=2,
+            condition=Condition.USED,
+            first_entry_date=date(2006, 10, 31),
+            last_restock_date=date(2017, 10, 31),
+        )
+        prod_1.create()
+        prod_2.create()
+        prod_3.create()
+        name = Inventory.find_by_queries(name="reverse bear trap")
+        for i in name:
+            self.assertEqual(i.id, 1)
+        conditions = Inventory.find_by_queries(condition="USED")
+        i = 0
+        for condition in conditions:
+            self.assertEqual(condition.condition.name, "USED")
+            i += 1
+        self.assertEqual(i, 2)
+        quantities = Inventory.find_by_queries(quantity="1")
+        i = 0
+        for quantity in quantities:
+            self.assertEqual(quantity.quantity, 1)
+            i += 1
+        self.assertEqual(i, 2)

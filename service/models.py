@@ -7,6 +7,7 @@ import logging
 from enum import Enum
 from datetime import date
 from flask_sqlalchemy import SQLAlchemy
+from typing import Optional, Union
 
 logger = logging.getLogger("flask.app")
 
@@ -188,3 +189,33 @@ class Inventory(db.Model):
         """
         logger.info("Processing name query for %s ...", quantity)
         return cls.query.filter(cls.quantity == quantity)
+
+    @classmethod
+    def find_by_queries(
+        cls,
+        name: Optional[str] = None,
+        quantity: Optional[str] = None,
+        condition: Optional[Union[str, int, Condition]] = None,
+    ) -> list:
+        """Returns all Customers with the given information
+
+        Args:
+            name (string, optional): the name of the Customers you want to match
+            quantity (string, optional): the quantity of the Customers you want to match
+            condition (string, int, Condition, optional): the condition of the Customers you want to match
+        """
+        query = cls.query
+
+        if name is not None:
+            query = query.filter(cls.name == name)
+        if quantity is not None:
+            query = query.filter(cls.quantity == quantity)
+        if condition is not None:
+            if isinstance(condition, str):
+                condition = getattr(Condition, condition.upper())
+            elif isinstance(condition, int):
+                condition = Condition(condition)
+            query = query.filter(cls.condition == condition)
+
+        logger.info("Processing query for %s %s %s ...", name, quantity, condition)
+        return query.all()

@@ -213,8 +213,6 @@ class Inventory(db.Model):
         if condition is not None:
             if isinstance(condition, str):
                 condition = getattr(Condition, condition.upper())
-            elif isinstance(condition, int):
-                condition = Condition(condition)
             query = query.filter(cls.condition == condition)
 
         logger.info("Processing query for %s %s %s ...", name, quantity, condition)

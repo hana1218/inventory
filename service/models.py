@@ -199,11 +199,8 @@ class Inventory(db.Model):
         """Returns all Customers with the given information
 
         Args:
-            name (string, optional): the name of the Customers you want to match
-            quantity (string, optional): the quantity of the Customers you want to match
-            condition (string, int, Condition, optional): the condition of the Customers you want to match
+            kwargs: parameters of the query string
         """
-        print(kwargs)
         query = cls.query
         log_info = ""
         for key, value in kwargs.items():

@@ -46,11 +46,11 @@ def step_impl(context):
     # load the database with new products
     for row in context.table:
         payload = {
-            "id": row["id"],
+            "id": int(row["id"]),
             "name": row["name"],
-            "quantity": row["quantity"],
-            "restock_level": row["restock_level"],
-            "restock_count": row["restock_count"],
+            "quantity": int(row["quantity"]),
+            "restock_level": int(row["restock_level"]),
+            "restock_count": int(row["restock_count"]),
             "condition": row["condition"],
             "first_entry_date": row["first_entry_date"],
             "last_restock_date": row["last_restock_date"],

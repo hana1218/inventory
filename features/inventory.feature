@@ -6,9 +6,9 @@ Feature: The inventory service back-end
 Background:
     Given the following products
         | id    | name     | quantity| restock_level | restock_count|condition| first_entry_date | last_restock_date |
-        | 12    | computer | 12      | 5             | 2            | NEW     | 2019-11-18       |  2019-12-18       |
-        | 321   | phone    | 32      | 2             | 11           | OPEN_BOX| 2020-08-13       |  2020-08-15       |
-        | 712   | table    | 43      | 7             | 3            | USED    | 2021-04-01       |  2021-04-05       |
+        | 12    | computer | 12      | 8             | 2            | NEW     | 2019-11-18       |  2019-12-18       |
+        | 321   | phone    | 32      | 50            | 11           | OPEN_BOX| 2020-08-13       |  2020-08-15       |
+        | 712   | table    | 43      | 100           | 3            | USED    | 2021-04-01       |  2021-04-05       |
         | 322   | pen      | 12      | 12            | 1            | USED    | 2018-06-04       |  2018-12-02       |
 
 Scenario: The server is running
@@ -51,14 +51,16 @@ Scenario: List all Products
     And I should see "kitty" in the results
     And I should not see "leo" in the results
 
-Scenario: Search for dogs
+Scenario: Read a product
     When I visit the "Home Page"
-    And I set the "Category" to "dog"
-    And I press the "Search" button
+    And I set the "id" to "12"
+    And I press the "Retrieve" button
     Then I should see the message "Success"
-    And I should see "fido" in the results
-    And I should not see "kitty" in the results
-    And I should not see "leo" in the results
+    And I should see "computer" in the "name" field
+    And I should see "12" in the "quantity" field
+    And I should see "2019-12-18" in the "last_restock_date" field
+    And I should see "NEW" in the "condition" field
+    
 
 Scenario: Search for available
     When I visit the "Home Page"

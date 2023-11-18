@@ -144,13 +144,17 @@ class Inventory(db.Model):
 
     @classmethod
     def find(cls, by_id):
-        """Finds a Product by it's ID"""
+        """Finds a Product by it's ID
+        Deprecated: suggest using find_by_queries()
+        """
+
         logger.info("Processing lookup for id %s ...", by_id)
         return db.session.get(cls, by_id)
 
     @classmethod
     def find_by_name(cls, name):
         """Returns all Products with the given name
+        Deprecated: suggest using find_by_queries()
 
         Args:
             name (string): the name of the Product you want to match
@@ -162,6 +166,7 @@ class Inventory(db.Model):
     @classmethod
     def find_by_condition(cls, condition):
         """Returns all Products with the given condition
+        Deprecated: suggest using find_by_queries()
 
         Args:
             condition (string): the condition of the Product you want to match
@@ -181,10 +186,47 @@ class Inventory(db.Model):
     @classmethod
     def find_by_quantity(cls, quantity):
         """Returns all Products with the given quantity
+        Deprecated: suggest using find_by_queries()
 
         Args:
             quantity (string): the quantity of the Product you want to match
-
         """
         logger.info("Processing name query for %s ...", quantity)
         return cls.query.filter(cls.quantity == quantity)
+
+    @classmethod
+    def find_by_queries(cls, **kwargs) -> list:
+        """Returns all Customers with the given information
+
+        Args:
+            kwargs: parameters of the query string
+        """
+        query = cls.query
+        log_info = ""
+        for key, value in kwargs.items():
+            if hasattr(cls, key):
+                if key == "condition":
+                    value = condition_handler(value)
+                query = query.filter(getattr(cls, key) == value)
+                log_info += key + ", "
+        logger.info("Processing query for %s ...", log_info)
+        return query.all()
+
+
+######################################################################
+#  U T I L I T Y   F U N C T I O N S
+######################################################################
+
+
+def condition_handler(condition):
+    """Converts the condition string to proper format
+
+    Args:
+        condition (string): the condition of the Product you want to match
+        It can be either int or string.
+    """
+    if str.isdigit(condition):
+        condition = Condition(int(condition))
+    else:
+        condition = getattr(Condition, str.upper(condition))
+    return condition

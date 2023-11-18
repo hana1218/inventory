@@ -8,6 +8,7 @@ Test cases can be run with the following:
 import os
 import logging
 from unittest import TestCase
+from datetime import datetime
 from service import app
 from service.models import db, init_db, Inventory
 from service.common import status  # HTTP Status Codes
@@ -341,7 +342,6 @@ class TestYourResourceServer(TestCase):
         prod_1 = ProductFactory()
         prod_1.restock_level = 100
         prod_1.quantity = 14
-        cur_count_1 = prod_1.restock_count
         id_1 = prod_1.id
         prod_1.create()
 
@@ -353,13 +353,15 @@ class TestYourResourceServer(TestCase):
         data = response.get_json()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data["quantity"], 100)
-        self.assertEqual(data["restock_count"], cur_count_1 + 1)
+        self.assertEqual(data["restock_count"], 86)
+        self.assertEqual(
+            data["last_restock_date"], datetime.today().strftime("%Y-%m-%d")
+        )
 
         # prod 2: quantity above level
         prod_2 = ProductFactory()
         prod_2.restock_level = 100
         prod_2.quantity = 136
-        cur_count_2 = prod_2.restock_count
         id_2 = prod_2.id
         prod_2.create()
 
@@ -373,7 +375,7 @@ class TestYourResourceServer(TestCase):
         data = response.get_json()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data["quantity"], 136)
-        self.assertEqual(data["restock_count"], cur_count_2)
+        self.assertEqual(data["restock_count"], 0)
 
         # restock nonexistent
         id_bad = id_2 + id_1

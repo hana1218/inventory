@@ -4,6 +4,7 @@ My Service
 Describe what your service does here
 """
 
+from datetime import datetime
 from flask import jsonify, request, url_for, abort
 from service.common import status  # HTTP Status Codes
 from service.models import Inventory
@@ -144,13 +145,19 @@ def restock_product(iid):
         abort(status.HTTP_404_NOT_FOUND, f"Product {iid} does not exist")
     cur = ans.quantity
     need = ans.restock_level
+    added = 0
     if cur < need:
         added = need - cur
         ans.quantity = need
-        ans.restock_count += 1
-        app.logger.info("Restock %d units of product %d", added, need)
-        ans.update()
-    return (f"Product {iid} restocked. Current quantity {need}", status.HTTP_200_OK)
+
+    ans.restock_count = added
+    ans.last_restock_date = datetime.today()
+    app.logger.info("Restock %d units of product %d", added, need)
+    ans.update()
+    return (
+        f"Product {iid} restocked by {added}. Current quantity {need}",
+        status.HTTP_200_OK,
+    )
 
 
 ######################################################################

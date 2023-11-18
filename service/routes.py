@@ -129,26 +129,7 @@ def delete_product(iid):
 def list_products():
     """Retrieves all products from the inventory"""
     app.logger.info("Request to list all products")
-    products = []
-    condition = request.args.get("condition")
-    name = request.args.get("name")
-    quantity = request.args.get("quantity")
-    if name and quantity and condition:
-        products = Inventory.find_by_queries(name, quantity, condition)
-    elif name and quantity:
-        products = Inventory.find_by_queries(name=name, quantity=quantity)
-    elif quantity and condition:
-        products = Inventory.find_by_queries(quantity=quantity, condition=condition)
-    elif name and condition:
-        products = Inventory.find_by_queries(name=name, condition=condition)
-    elif condition:
-        products = Inventory.find_by_condition(condition)
-    elif name:
-        products = Inventory.find_by_name(name)
-    elif quantity:
-        products = Inventory.find_by_quantity(quantity)
-    else:
-        products = Inventory.all()
+    products = Inventory.find_by_queries(**request.args)
     results = [product.serialize() for product in products]
     app.logger.info("Returning %d products", len(results))
     return jsonify(results), status.HTTP_200_OK

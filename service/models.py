@@ -164,37 +164,6 @@ class Inventory(db.Model):
         return cls.query.filter(cls.name == name)
 
     @classmethod
-    def find_by_condition(cls, condition):
-        """Returns all Products with the given condition
-        Deprecated: suggest using find_by_queries()
-
-        Args:
-            condition (string): the condition of the Product you want to match
-
-        NEW: http://127.0.0.1:8000/inventory?condition=0
-        OPEN_BOX: http://127.0.0.1:8000/inventory?condition=1
-        USED: http://127.0.0.1:8000/inventory?condition=2
-        """
-        if str.isdigit(condition):
-            condition = Condition(int(condition))
-            logger.info("Processing condition query for %s ...", condition)
-        else:
-            condition = getattr(Condition, str.upper(condition))
-            logger.info("Processing condition query for %s ...", condition)
-        return cls.query.filter(cls.condition == condition)
-
-    @classmethod
-    def find_by_quantity(cls, quantity):
-        """Returns all Products with the given quantity
-        Deprecated: suggest using find_by_queries()
-
-        Args:
-            quantity (string): the quantity of the Product you want to match
-        """
-        logger.info("Processing name query for %s ...", quantity)
-        return cls.query.filter(cls.quantity == quantity)
-
-    @classmethod
     def find_by_queries(cls, **kwargs) -> list:
         """Returns all Customers with the given information
 

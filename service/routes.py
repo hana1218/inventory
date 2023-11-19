@@ -149,7 +149,7 @@ def restock_product(iid):
     if cur < need:
         added = need - cur + ans.restock_count
     else:
-        added = restock_count
+        added = ans.restock_count
     ans.quantity += added
     #ans.restock_count = added
     ans.last_restock_date = datetime.today()

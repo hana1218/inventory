@@ -342,6 +342,7 @@ class TestYourResourceServer(TestCase):
         prod_1 = ProductFactory()
         prod_1.restock_level = 100
         prod_1.quantity = 14
+        prod_1.restock_count = 20
         id_1 = prod_1.id
         prod_1.create()
 
@@ -352,8 +353,7 @@ class TestYourResourceServer(TestCase):
         response = self.client.get(f"{BASE_URL}/{id_1}")
         data = response.get_json()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(data["quantity"], 100)
-        self.assertEqual(data["restock_count"], 86)
+        self.assertEqual(data["quantity"], 120)
         self.assertEqual(
             data["last_restock_date"], datetime.today().strftime("%Y-%m-%d")
         )
@@ -361,6 +361,7 @@ class TestYourResourceServer(TestCase):
         # prod 2: quantity above level
         prod_2 = ProductFactory()
         prod_2.restock_level = 100
+        prod_2.restock_count = 15
         prod_2.quantity = 136
         id_2 = prod_2.id
         prod_2.create()
@@ -374,8 +375,7 @@ class TestYourResourceServer(TestCase):
         response = self.client.get(f"{BASE_URL}/{id_2}")
         data = response.get_json()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(data["quantity"], 136)
-        self.assertEqual(data["restock_count"], 0)
+        self.assertEqual(data["quantity"], 151)
 
         # restock nonexistent
         id_bad = id_2 + id_1

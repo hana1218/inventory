@@ -138,7 +138,7 @@ def list_products():
 
 @app.route("/inventory/<iid>/restock", methods=["PUT"])
 def restock_product(iid):
-    """Restocks product with certain id to its restock level"""
+    """Restocks product with certain id by count or up to level + count"""
     app.logger.info("Request to restock product with id %d...", iid)
     ans = Inventory.find(iid)
     if ans is None:
@@ -147,10 +147,11 @@ def restock_product(iid):
     need = ans.restock_level
     added = 0
     if cur < need:
-        added = need - cur
-        ans.quantity = need
-
-    ans.restock_count = added
+        added = need - cur + ans.restock_count
+    else:
+        added = restock_count
+    ans.quantity += added
+    #ans.restock_count = added
     ans.last_restock_date = datetime.today()
     app.logger.info("Restock %d units of product %d", added, need)
     ans.update()

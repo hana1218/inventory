@@ -105,7 +105,6 @@ Scenario: Delete a Product
     And I should see "10" in the "restock_level" field
     And I should see "5" in the "restock_count" field
     And I should see "NEW" in the "condition" field
-    And I should see "2017-01-01" in the "condition" field
     And I should see "2023-01-01" in the "last_restock_date" field
     When I press the "Delete" button
     Then I should see the message "Product has been Deleted!"

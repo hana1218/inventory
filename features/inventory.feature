@@ -48,9 +48,11 @@ Scenario: List all Products
     When I visit the "Home Page"
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "fido" in the results
-    And I should see "kitty" in the results
-    And I should not see "leo" in the results
+    And I should see "computer" in the results
+    And I should see "phone" in the results
+    And I should see "table" in the results
+    And I should see "pen" in the results
+    And I should not see "mouse" in the results
 
 Scenario: Read a product
     When I visit the "Home Page"

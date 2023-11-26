@@ -65,15 +65,22 @@ Scenario: Read a product
     And I should see "NEW" in the "condition" field
     
 
-Scenario: Search for available
+Scenario: Search for Condition
     When I visit the "Home Page"
-    And I select "True" in the "Available" dropdown
+    And I select "NEW" in the "Condition" dropdown
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "fido" in the results
-    And I should see "kitty" in the results
-    And I should see "sammy" in the results
-    And I should not see "leo" in the results
+    And I should see "computer" in the results
+    And I should see "monitor" in the results
+
+Scenario: Search for multiple queries
+    When I visit the "Home Page"
+    And I select "NEW" in the "Condition" dropdown
+    And I set the "quantity" to "12"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "computer" in the results
+    And I should not see "monitor" in the results
 
 Scenario: Update a Product
     When I visit the "Home Page"

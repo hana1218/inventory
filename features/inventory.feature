@@ -72,6 +72,8 @@ Scenario: Search for Condition
     Then I should see the message "Success"
     And I should see "computer" in the results
     And I should see "monitor" in the results
+    And I should not see "phone" in the results
+    And I should not see "table" in the results
 
 Scenario: Search for multiple queries
     When I visit the "Home Page"

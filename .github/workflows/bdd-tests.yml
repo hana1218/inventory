@@ -60,4 +60,3 @@ jobs:
 
       - name: Run Integration Tests
         run: behave
-  

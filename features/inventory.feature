@@ -86,25 +86,34 @@ Scenario: Search for multiple queries
 
 Scenario: Update a Product
     When I visit the "Home Page"
-    And I set the "Name" to "fido"
+    And I set the "id" to "127"
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "fido" in the "Name" field
-    And I should see "dog" in the "Category" field
-    When I change "Name" to "Loki"
+    And I should see "monitor" in the "name" field
+    And I should see "25" in the "quantity" field
+    And I should see "10" in the "restock_level" field
+    And I should see "5" in the "restock_count" field
+    And I should see "NEW" in the "condition" field
+    And I should see "2023-01-01" in the "last_restock_date" field
+    When I change "name" to "keyboard"
     And I press the "Update" button
     Then I should see the message "Success"
-    When I copy the "Id" field
+    When I copy the "id" field
     And I press the "Clear" button
-    And I paste the "Id" field
+    And I paste the "id" field
     And I press the "Retrieve" button
     Then I should see the message "Success"
-    And I should see "Loki" in the "Name" field
+    And I should see "keyboard" in the "name" field
+    And I should see "25" in the "quantity" field
+    And I should see "10" in the "restock_level" field
+    And I should see "5" in the "restock_count" field
+    And I should see "NEW" in the "condition" field
+    And I should see "2023-01-01" in the "last_restock_date" field
     When I press the "Clear" button
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "Loki" in the results
-    And I should not see "fido" in the results
+    And I should see "keyboard" in the results
+    And I should not see "monitor" in the results
 
 Scenario: Delete a Product
     When I visit the "Home Page"

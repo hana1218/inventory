@@ -65,7 +65,6 @@ $(function () {
             type: "POST",
             url: "/inventory",
             contentType: "application/json",
-            data: JSON.stringify(data),
         });
 
         ajax.done(function(res){
@@ -125,6 +124,33 @@ $(function () {
 
     });
 
+
+    // ****************************************
+    // Restock a Product
+    // ****************************************
+
+    $("#restock-btn").click(function () {
+
+        let product_id = $("#product_id").val();
+        //$("#flash_message").empty();
+
+        let ajax = $.ajax({
+                type: "PUT",
+                url: `/inventory/${product_id}/restock`,
+                contentType: "application/json",
+            })
+
+        ajax.done(function(res){
+            update_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
+
+    });
+
     // ****************************************
     // Retrieve a Product
     // ****************************************
@@ -154,6 +180,9 @@ $(function () {
         });
 
     });
+
+
+    
 
     // ****************************************
     // Delete a Product

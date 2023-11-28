@@ -151,14 +151,11 @@ def restock_product(iid):
     else:
         added = ans.restock_count
     ans.quantity += added
-    #ans.restock_count = added
+    # ans.restock_count = added
     ans.last_restock_date = datetime.today()
     app.logger.info("Restock %d units of product %d", added, need)
     ans.update()
-    return (
-        f"Product {iid} restocked by {added}. Current quantity {need}",
-        status.HTTP_200_OK,
-    )
+    return jsonify(ans.serialize()), status.HTTP_200_OK
 
 
 ######################################################################

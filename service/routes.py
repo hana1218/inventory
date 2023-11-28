@@ -147,11 +147,11 @@ def restock_product(iid):
     need = ans.restock_level
     added = 0
     if cur < need:
-        added = need - cur + ans.restock_count
+        added = need - cur
     else:
         added = ans.restock_count
     ans.quantity += added
-    #ans.restock_count = added
+    # ans.restock_count = added
     ans.last_restock_date = datetime.today()
     app.logger.info("Restock %d units of product %d", added, need)
     ans.update()

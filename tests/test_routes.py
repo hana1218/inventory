@@ -353,7 +353,7 @@ class TestYourResourceServer(TestCase):
         response = self.client.get(f"{BASE_URL}/{id_1}")
         data = response.get_json()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(data["quantity"], 120)
+        self.assertEqual(data["quantity"], 100)
         self.assertEqual(
             data["last_restock_date"], datetime.today().strftime("%Y-%m-%d")
         )

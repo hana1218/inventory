@@ -147,7 +147,7 @@ def restock_product(iid):
     need = ans.restock_level
     added = 0
     if cur < need:
-        added = need - cur + ans.restock_count
+        added = need - cur
     else:
         added = ans.restock_count
     ans.quantity += added

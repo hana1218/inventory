@@ -65,6 +65,7 @@ $(function () {
             type: "POST",
             url: "/inventory",
             contentType: "application/json",
+            data: JSON.stringify(data),
         });
 
         ajax.done(function(res){

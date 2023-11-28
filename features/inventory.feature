@@ -128,3 +128,31 @@ Scenario: Delete a Product
     And I should see "2023-01-01" in the "last_restock_date" field
     When I press the "Delete" button
     Then I should see the message "Product has been Deleted!"
+
+Scenario: Restock a Product
+    When I visit the "Home Page"
+    And I set the "id" to "127"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "monitor" in the "name" field
+    And I should see "25" in the "quantity" field
+    And I should see "10" in the "restock_level" field
+    And I should see "5" in the "restock_count" field
+    And I should see "NEW" in the "condition" field
+    And I should see "2023-01-01" in the "last_restock_date" field
+    When I press the "Restock" button
+    Then I should see the message "Success"
+    And I should see "30" in the "quantity" field
+    When I press the "Clear" button
+    And I set the "id" to "712"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "table" in the "name" field
+    And I should see "43" in the "quantity" field
+    And I should see "100" in the "restock_level" field
+    And I should see "3" in the "restock_count" field
+    And I should see "USED" in the "condition" field
+    When I press the "Restock" button
+    Then I should see the message "Success"
+    And I should see "100" in the "quantity" field
+

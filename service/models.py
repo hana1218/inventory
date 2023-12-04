@@ -24,6 +24,10 @@ class DataValidationError(Exception):
     """Used for an data validation errors when deserializing"""
 
 
+class DatabaseConnectionError(Exception):
+    """Custom Exception when database connection fails"""
+
+
 class Condition(Enum):
     """Enumeration of valid product Conditions"""
 

@@ -44,32 +44,43 @@ def index():
 # Define the model so that the docs reflect what can be sent
 
 
-create_model = api.model(
+inventory_model = api.model(
     "Inventory",
     {
         "id": fields.Integer(required=True, description="The ID of the Inventory"),
         "name": fields.String(required=True, description="The name of the Inventory"),
-        "quantity": fields.Integer(required=True, description="The quantity of the Inventory"),
-        "restock_level": fields.Integer(required=True, description="The restock level of the Inventory"),
-        "restock_count": fields.Integer(required=True, description="The restock count of the Inventory"),
+        "quantity": fields.Integer(
+            required=True, description="The quantity of the Inventory"
+        ),
+        "restock_level": fields.Integer(
+            required=True, description="The restock level of the Inventory"
+        ),
+        "restock_count": fields.Integer(
+            required=True, description="The restock count of the Inventory"
+        ),
         # pylint: disable=protected-access
         "condition": fields.String(
-            enum=Condition._member_names_, description="The condition of the inventory item (NEW, USED, OPEN_BOX)"
+            enum=Condition._member_names_,
+            description="The condition of the inventory item (NEW, USED, OPEN_BOX)",
         ),
-        "first_entry_date": fields.Date(required=True, description="The first entry date of the inventory"),
-        "last_restock_date": fields.Date(required=True, description="The last restock date of the inventory"),
+        "first_entry_date": fields.Date(
+            required=True, description="The first entry date of the inventory"
+        ),
+        "last_restock_date": fields.Date(
+            required=True, description="The last restock date of the inventory"
+        ),
     },
 )
 
-inventory_model = api.inherit(
-    "InventoryModel",
-    create_model,
-    {
-        "id": fields.String(
-            readOnly=True, description="The unique id assigned internally by service"
-        ),
-    },
-)
+# inventory_model = api.inherit(
+#     "InventoryModel",
+#     create_model,
+#     {
+#         "id": fields.String(
+#             readOnly=True, description="The unique id assigned internally by service"
+#         ),
+#     },
+# )
 
 ######################################################################
 #  PATH: /Inventory/{id}
@@ -107,9 +118,9 @@ class InventoryResource(Resource):
     # ------------------------------------------------------------------
     # UPDATE AN EXISTING INVENTORY
     # ------------------------------------------------------------------
-    @api.doc('update_inventory')
-    @api.response(404, 'Inventory not found')
-    @api.response(400, 'The posted Inventory data was not valid')
+    @api.doc("update_inventory")
+    @api.response(404, "Inventory not found")
+    @api.response(400, "The posted Inventory data was not valid")
     @api.expect(inventory_model)
     @api.marshal_with(inventory_model)
     def put(self, iid):
@@ -135,8 +146,8 @@ class InventoryResource(Resource):
     # ------------------------------------------------------------------
     # DELETE A INVENTORY
     # ------------------------------------------------------------------
-    @api.doc('delete_inventory_id')
-    @api.response(204, 'Inventory deleted')
+    @api.doc("delete_inventory_id")
+    @api.response(204, "Inventory deleted")
     def delete(self, iid):
         """Delete a product from the inventory"""
         app.logger.info("Request to delete product with id: %s", iid)
@@ -176,7 +187,7 @@ class InventoryCollection(Resource):
     # ------------------------------------------------------------------
     @api.doc("create_inventory")
     @api.response(400, "The posted data was not valid")
-    @api.expect(create_model)
+    @api.expect(inventory_model)
     @api.marshal_with(inventory_model, code=201)
     def post(self):
         """

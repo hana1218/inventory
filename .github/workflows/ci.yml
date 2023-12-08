@@ -9,6 +9,7 @@ on:
     paths-ignore: 
       - "README.md"
       - ".vscode/**"
+      - "requirements.txt"
   pull_request:
     branches: [ "master" ]
     paths-ignore: 

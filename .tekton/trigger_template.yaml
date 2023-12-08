@@ -1,0 +1,35 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: cd-template
+spec:
+  params:
+  - name: git-repo-url
+    description: the git repository url 
+  - name: git-revision 
+    description: the git revision
+  - name: git-repo-name
+    description: the name of the deployment to be patched/deployed 
+  
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1 
+    kind: PipelineRun
+    metadata:
+      generateName: inventory-cd
+    spec:
+      serviceAccountName: pipeline 
+      pipelineRef:
+        name: inventory-cd
+      params:
+      - name: APP_NAME
+        value: $(tt.params.git-repo-name)
+      - name: GIT_REPO
+        value: $(tt.params.git-repo-url)
+      - name: IMAGE_NAME
+        value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(tt.params.git-repo-name):$(tt.params.git-revision)
+      workspaces:
+      - name: inventory-workspace
+        persistentVolumeClaim: 
+          claimName: inventory-pvc
+
+        

@@ -1,6 +1,7 @@
 # NYU DevOps Project: Inventory
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
+[![codecov](https://codecov.io/gh/CSCI-GA-2820-FA23-001/inventory/graph/badge.svg?token=XPUY3ZQ547)](https://codecov.io/gh/CSCI-GA-2820-FA23-001/inventory)
 [![Build Status](https://github.com/CSCI-GA-2820-FA23-001/inventory/actions/workflows/ci.yml/badge.svg)](https://github.com/CSCI-GA-2820-FA23-001/inventory/actions)
 [![Build Status](https://github.com/CSCI-GA-2820-FA23-001/inventory/actions/workflows/bdd.yml/badge.svg)](https://github.com/CSCI-GA-2820-FA23-001/inventory/actions)
 

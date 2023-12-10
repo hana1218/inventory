@@ -173,4 +173,6 @@ spec:
       image: python:3.11-slim
       workingDir: /workspace/source 
       command: [behave]
-      args: ["$(params.BASE_URL)"]
+      env:
+        - name: BASE_URL
+          value: "$(params.BASE_URL)"

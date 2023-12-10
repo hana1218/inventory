@@ -19,8 +19,8 @@ spec:
       labels:
         app: inventory
     spec:
-      imagePullSecrets:
-      - name: all-icr-io
+      # imagePullSecrets:
+      # - name: all-icr-io
       restartPolicy: Always
       initContainers:
       - name: check-postgres

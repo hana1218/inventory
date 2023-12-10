@@ -170,9 +170,10 @@ spec:
     default: "http://inventory-cd-jessie-jy2728-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com"
   steps:
     - name: run
-      image: python:3.11-slim
+      image: $(inputs.params.image_name)
       workingDir: /workspace/source 
       command: [behave]
       env:
         - name: BASE_URL
           value: "$(params.BASE_URL)"
+      args: behave

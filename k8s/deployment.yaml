@@ -28,15 +28,15 @@ spec:
         command: ['sh', '-c', 'until nc -z postgres 5432; do echo waiting for postgres; sleep 2; done;']
       containers:
       - name: inventory
-        image: cluster-registry:32000/inventory:1.0
-        #image: inventory
+        #image: cluster-registry:32000/inventory:1.0
+        image: cluster-registry:32000/inventory:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
           protocol: TCP
         env:
           - name: RETRY_COUNT
-            value: "10"
+            value: "9"
           - name: DATABASE_URI
             valueFrom:
               secretKeyRef:

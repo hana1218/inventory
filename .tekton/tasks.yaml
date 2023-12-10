@@ -167,13 +167,26 @@ spec:
   - name: BASE_URL
     description: The base url to the inventory microservice
     type: string
-    default: "http://inventory-cd-jessie-jy2728-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com"
+    default: "http://inventory-service-jessie-jy2728-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com"
   steps:
     - name: run
-      image: $(inputs.params.image_name)
+      image: docker.io/rofrano/pipeline-selenium
       workingDir: /workspace/source 
-      command: [behave]
+      command: ["/bin/bash", "-c"]
       env:
         - name: BASE_URL
           value: "$(params.BASE_URL)"
-      args: behave
+      args: 
+        - |-
+            #!/bin/bash
+            set -e
+            echo "***** Installing dependencies *****"
+            python -m pip install --upgrade pip wheel
+            pip install -qr requirements.txt
+
+            echo "\n*** STARTING APPLICATION ***\n"
+            sleep 30
+            curl -L -I $(params.BASE_URL)
+
+            echo "***** Running BDD *****"
+            behave

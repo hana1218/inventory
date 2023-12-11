@@ -22,7 +22,8 @@ metadata:
   uid: c26c53c1-15a5-46c2-8b68-1e48b765c4de
 spec:
   params:
-    - description: The URL to the git repo
+    - default: 'https://github.com/CSCI-GA-2820-FA23-001/inventory.git'
+      description: The URL to the git repo
       name: GIT_REPO
       type: string
     - default: master

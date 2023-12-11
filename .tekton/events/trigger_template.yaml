@@ -15,11 +15,11 @@ spec:
   - apiVersion: tekton.dev/v1beta1 
     kind: PipelineRun
     metadata:
-      generateName: inventory-cd
+      generateName: cd-pipeline-$(tt.params.git-repo-name)-
     spec:
       serviceAccountName: pipeline 
       pipelineRef:
-        name: inventory-cd
+        name: cd-pipeline
       params:
       - name: APP_NAME
         value: $(tt.params.git-repo-name)
@@ -28,8 +28,8 @@ spec:
       - name: IMAGE_NAME
         value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(tt.params.git-repo-name):$(tt.params.git-revision)
       workspaces:
-      - name: inventory-workspace
+      - name: pipeline-workspace
         persistentVolumeClaim: 
-          claimName: inventory-pvc
+          claimName: pipeline-pvc
 
         

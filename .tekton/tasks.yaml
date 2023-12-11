@@ -167,7 +167,7 @@ spec:
   - name: BASE_URL
     description: The base url to the inventory microservice
     type: string
-    default: "http://inventory-cd-jessie-jy2728-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com"
+    default: "https://inventory-yw6775-dev.apps.sandbox-m4.g2pi.p1.openshiftapps.com/"
   steps:
     - name: run
       image: $(inputs.params.image_name)

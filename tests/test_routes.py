@@ -57,21 +57,15 @@ class TestYourResourceServer(TestCase):
         products = []
         while count:
             test_product = ProductFactory()
-            iid = test_product.serialize()["id"]
-            response = self.client.get(
-                f"{BASE_URL}/{iid}", content_type="application/json"
+            test_product.id = count
+            response = self.client.post(BASE_URL, json=test_product.serialize())
+            self.assertEqual(
+                response.status_code,
+                status.HTTP_201_CREATED,
+                "Could not create test product",
             )
-            if response.status_code == 404:
-                response = self.client.post(BASE_URL, json=test_product.serialize())
-                self.assertEqual(
-                    response.status_code,
-                    status.HTTP_201_CREATED,
-                    "Could not create test product",
-                )
-                new_product = response.get_json()
-                test_product.id = new_product["id"]
-                products.append(test_product)
-                count -= 1
+            products.append(test_product)
+            count -= 1
         return products
 
     ######################################################################
